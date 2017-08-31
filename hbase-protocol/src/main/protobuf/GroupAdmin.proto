@@ -1,0 +1,136 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package hbase.pb;
+
+option java_package = "org.apache.hadoop.hbase.protobuf.generated";
+option java_outer_classname = "GroupAdminProtos";
+option java_generic_services = true;
+option java_generate_equals_and_hash = true;
+option optimize_for = SPEED;
+
+import "HBase.proto";
+import "Group.proto";
+
+/** Group level protobufs */
+
+message ListTablesOfGroupRequest {
+    required string group_name = 1;
+}
+
+message ListTablesOfGroupResponse {
+    repeated TableName table_name = 1;
+}
+
+message GetGroupInfoRequest {
+    required string group_name = 1;
+}
+
+message GetGroupInfoResponse {
+    optional GroupInfo group_info = 1;
+}
+
+message GetGroupInfoOfTableRequest {
+    required TableName table_name = 1;
+}
+
+message GetGroupInfoOfTableResponse {
+    optional GroupInfo group_info = 1;
+}
+
+message MoveServersRequest {
+    required string target_group = 1;
+    repeated HostPort servers = 2;
+}
+
+message MoveServersResponse {
+}
+
+message MoveTablesRequest {
+    required string target_group = 1;
+    repeated TableName table_name = 2;
+}
+
+message MoveTablesResponse {
+}
+
+message AddGroupRequest {
+    required string group_name = 1;
+}
+
+message AddGroupResponse {
+}
+
+message RemoveGroupRequest {
+    required string group_name = 1;
+}
+
+message RemoveGroupResponse {
+}
+
+message BalanceGroupRequest {
+    required string group_name = 1;
+}
+
+message BalanceGroupResponse {
+    required bool balanceRan = 1;
+}
+
+message ListGroupInfosRequest {
+}
+
+message ListGroupInfosResponse {
+    repeated GroupInfo  group_info = 1;
+}
+
+message GetGroupInfoOfServerRequest {
+    required HostPort server = 1;
+}
+
+message GetGroupInfoOfServerResponse {
+    optional GroupInfo group_info = 1;
+}
+
+service GroupAdminService {
+    rpc GetGroupInfo(GetGroupInfoRequest)
+    returns (GetGroupInfoResponse);
+
+    rpc GetGroupInfoOfTable(GetGroupInfoOfTableRequest)
+    returns (GetGroupInfoOfTableResponse);
+
+    rpc GetGroupInfoOfServer(GetGroupInfoOfServerRequest)
+    returns (GetGroupInfoOfServerResponse);
+
+    rpc MoveServers(MoveServersRequest)
+    returns (MoveServersResponse);
+
+    rpc MoveTables(MoveTablesRequest)
+    returns (MoveTablesResponse);
+
+    rpc AddGroup(AddGroupRequest)
+    returns (AddGroupResponse);
+
+    rpc RemoveGroup(RemoveGroupRequest)
+    returns (RemoveGroupResponse);
+
+    rpc BalanceGroup(BalanceGroupRequest)
+    returns (BalanceGroupResponse);
+
+    rpc ListGroupInfos(ListGroupInfosRequest)
+    returns (ListGroupInfosResponse);
+}

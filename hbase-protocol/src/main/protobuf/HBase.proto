@@ -238,3 +238,9 @@ message RegionServerInfo {
   optional int32 infoPort = 1;
   optional VersionInfo version_info = 2;
 }
+
+message HostPort {
+  required string host_name = 1;
+  required uint32 port = 2;
+}
+

@@ -61,7 +61,10 @@ import org.apache.hadoop.hbase.regionserver.wal.HLogKey;
 import org.apache.hadoop.hbase.wal.WALKey;
 import org.apache.hadoop.hbase.regionserver.wal.WALEdit;
 import org.apache.hadoop.hbase.util.Pair;
+import com.google.common.net.HostAndPort;
+import org.apache.hadoop.hbase.TableName;
 
+import java.util.Set;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -524,4 +527,5 @@ public class BaseRegionObserver implements RegionObserver {
       throws IOException {
     return delTracker;
   }
+
 }

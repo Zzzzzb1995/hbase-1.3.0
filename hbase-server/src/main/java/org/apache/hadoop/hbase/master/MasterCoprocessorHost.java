@@ -42,6 +42,9 @@ import org.apache.hadoop.hbase.procedure2.ProcedureExecutor;
 import org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.SnapshotDescription;
 import org.apache.hadoop.hbase.protobuf.generated.QuotaProtos.Quotas;
 
+import java.util.Set;
+import com.google.common.net.HostAndPort;
+
 /**
  * Provides the coprocessor framework and environment for master oriented
  * operations.  {@link HMaster} interacts with the loaded coprocessors
@@ -60,12 +63,15 @@ public class MasterCoprocessorHost
   static class MasterEnvironment extends CoprocessorHost.Environment
       implements MasterCoprocessorEnvironment {
     private MasterServices masterServices;
+    final boolean supportGroupCPs;
 
     public MasterEnvironment(final Class<?> implClass, final Coprocessor impl,
         final int priority, final int seq, final Configuration conf,
         final MasterServices services) {
       super(impl, priority, seq, conf);
       this.masterServices = services;
+      supportGroupCPs = !useLegacyMethod(impl.getClass(),
+              "preBalanceGroup", ObserverContext.class, String.class);
     }
 
     public MasterServices getMasterServices() {
@@ -1250,6 +1256,137 @@ public class MasterCoprocessorHost
       ctx.postEnvCall(env);
     }
     return bypass;
+  }
+
+
+  public void preMoveServers(final Set<HostAndPort> servers, final String targetGroup)
+          throws IOException {
+    execOperation(coprocessors.isEmpty() ? null : new CoprocessorOperation() {
+      @Override
+      public void call(MasterObserver oserver,
+                       ObserverContext<MasterCoprocessorEnvironment> ctx) throws IOException {
+        if(((MasterEnvironment)ctx.getEnvironment()).supportGroupCPs) {
+          oserver.preMoveServers(ctx, servers, targetGroup);
+        }
+      }
+    });
+  }
+
+  public void postMoveServers(final Set<HostAndPort> servers, final String targetGroup)
+          throws IOException {
+    execOperation(coprocessors.isEmpty() ? null : new CoprocessorOperation() {
+      @Override
+      public void call(MasterObserver oserver,
+                       ObserverContext<MasterCoprocessorEnvironment> ctx) throws IOException {
+        if(((MasterEnvironment)ctx.getEnvironment()).supportGroupCPs) {
+          oserver.postMoveServers(ctx, servers, targetGroup);
+        }
+      }
+    });
+  }
+
+  public void preMoveTables(final Set<TableName> tables, final String targetGroup)
+          throws IOException {
+    execOperation(coprocessors.isEmpty() ? null : new CoprocessorOperation() {
+      @Override
+      public void call(MasterObserver oserver,
+                       ObserverContext<MasterCoprocessorEnvironment> ctx) throws IOException {
+        if(((MasterEnvironment)ctx.getEnvironment()).supportGroupCPs) {
+          oserver.preMoveTables(ctx, tables, targetGroup);
+        }
+      }
+    });
+  }
+
+  public void postMoveTables(final Set<TableName> tables, final String targetGroup)
+          throws IOException {
+    execOperation(coprocessors.isEmpty() ? null : new CoprocessorOperation() {
+      @Override
+      public void call(MasterObserver oserver,
+                       ObserverContext<MasterCoprocessorEnvironment> ctx) throws IOException {
+        if(((MasterEnvironment)ctx.getEnvironment()).supportGroupCPs) {
+          oserver.postMoveTables(ctx, tables, targetGroup);
+        }
+      }
+    });
+  }
+
+  public void preAddGroup(final String name)
+          throws IOException {
+    execOperation(coprocessors.isEmpty() ? null : new CoprocessorOperation() {
+      @Override
+      public void call(MasterObserver oserver,
+                       ObserverContext<MasterCoprocessorEnvironment> ctx) throws IOException {
+        if(((MasterEnvironment)ctx.getEnvironment()).supportGroupCPs) {
+          oserver.preAddGroup(ctx, name);
+        }
+      }
+    });
+  }
+
+  public void postAddGroup(final String name)
+          throws IOException {
+    execOperation(coprocessors.isEmpty() ? null : new CoprocessorOperation() {
+      @Override
+      public void call(MasterObserver oserver,
+                       ObserverContext<MasterCoprocessorEnvironment> ctx) throws IOException {
+        if (((MasterEnvironment) ctx.getEnvironment()).supportGroupCPs) {
+          oserver.postAddGroup(ctx, name);
+        }
+      }
+    });
+  }
+
+  public void preRemoveGroup(final String name)
+          throws IOException {
+    execOperation(coprocessors.isEmpty() ? null : new CoprocessorOperation() {
+      @Override
+      public void call(MasterObserver oserver,
+                       ObserverContext<MasterCoprocessorEnvironment> ctx) throws IOException {
+        if(((MasterEnvironment)ctx.getEnvironment()).supportGroupCPs) {
+          oserver.preRemoveGroup(ctx, name);
+        }
+      }
+    });
+  }
+
+  public void postRemoveGroup(final String name)
+          throws IOException {
+    execOperation(coprocessors.isEmpty() ? null : new CoprocessorOperation() {
+      @Override
+      public void call(MasterObserver oserver,
+                       ObserverContext<MasterCoprocessorEnvironment> ctx) throws IOException {
+        if(((MasterEnvironment)ctx.getEnvironment()).supportGroupCPs) {
+          oserver.postRemoveGroup(ctx, name);
+        }
+      }
+    });
+  }
+
+  public void preBalanceGroup(final String name)
+          throws IOException {
+    execOperation(coprocessors.isEmpty() ? null : new CoprocessorOperation() {
+      @Override
+      public void call(MasterObserver oserver,
+                       ObserverContext<MasterCoprocessorEnvironment> ctx) throws IOException {
+        if(((MasterEnvironment)ctx.getEnvironment()).supportGroupCPs) {
+          oserver.preBalanceGroup(ctx, name);
+        }
+      }
+    });
+  }
+
+  public void postBalanceGroup(final String name, final boolean balanceRan)
+          throws IOException {
+    execOperation(coprocessors.isEmpty() ? null : new CoprocessorOperation() {
+      @Override
+      public void call(MasterObserver oserver,
+                       ObserverContext<MasterCoprocessorEnvironment> ctx) throws IOException {
+        if(((MasterEnvironment)ctx.getEnvironment()).supportGroupCPs) {
+          oserver.postBalanceGroup(ctx, name, balanceRan);
+        }
+      }
+    });
   }
 
 }

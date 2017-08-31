@@ -494,6 +494,10 @@ public class TestCatalogJanitor {
       return -1;
     }
 
+    public LoadBalancer getLoadBalancer() {
+      return null;
+    }
+
     @Override
     public void addColumn(
         final TableName tableName,

@@ -132,7 +132,6 @@ import org.apache.hadoop.hbase.protobuf.generated.WALProtos.FlushDescriptor;
 import org.apache.hadoop.hbase.protobuf.generated.WALProtos.FlushDescriptor.FlushAction;
 import org.apache.hadoop.hbase.protobuf.generated.WALProtos.RegionEventDescriptor;
 import org.apache.hadoop.hbase.protobuf.generated.WALProtos.RegionEventDescriptor.EventType;
-import org.apache.hadoop.hbase.protobuf.generated.WALProtos.BulkLoadDescriptor;
 import org.apache.hadoop.hbase.protobuf.generated.WALProtos.StoreDescriptor;
 import org.apache.hadoop.hbase.quotas.QuotaScope;
 import org.apache.hadoop.hbase.quotas.QuotaType;
@@ -170,6 +169,12 @@ import com.google.protobuf.RpcController;
 import com.google.protobuf.Service;
 import com.google.protobuf.ServiceException;
 import com.google.protobuf.TextFormat;
+
+import org.apache.hadoop.hbase.group.GroupInfo;
+import org.apache.hadoop.hbase.protobuf.generated.GroupProtos;
+import org.apache.hadoop.hbase.protobuf.generated.RPCProtos;
+import org.apache.hadoop.hbase.protobuf.generated.WALProtos.BulkLoadDescriptor;
+import com.google.common.net.HostAndPort;
 
 /**
  * Protobufs utility.
@@ -3299,6 +3304,37 @@ public final class ProtobufUtil {
     codedInput.setSizeLimit(b.length);
     builder.mergeFrom(codedInput);
     codedInput.checkLastTagWas(0);
+  }
+
+
+  public static GroupInfo toGroupInfo(GroupProtos.GroupInfo proto) {
+    GroupInfo groupInfo = new GroupInfo(proto.getName());
+    for(HBaseProtos.HostPort el: proto.getServersList()) {
+      groupInfo.addServer(HostAndPort.fromParts(el.getHostName(), el.getPort()));
+    }
+    for(HBaseProtos.TableName pTableName: proto.getTablesList()) {
+      groupInfo.addTable(ProtobufUtil.toTableName(pTableName));
+    }
+    return groupInfo;
+  }
+
+  public static GroupProtos.GroupInfo toProtoGroupInfo(GroupInfo pojo) {
+    List<HBaseProtos.TableName> tables =
+            new ArrayList<HBaseProtos.TableName>(pojo.getTables().size());
+    for(TableName arg: pojo.getTables()) {
+      tables.add(ProtobufUtil.toProtoTableName(arg));
+    }
+    List<HBaseProtos.HostPort> hostports =
+            new ArrayList<HBaseProtos.HostPort>(pojo.getServers().size());
+    for(HostAndPort el: pojo.getServers()) {
+      hostports.add(HBaseProtos.HostPort.newBuilder()
+              .setHostName(el.getHostText())
+              .setPort(el.getPort())
+              .build());
+    }
+    return GroupProtos.GroupInfo.newBuilder().setName(pojo.getName())
+            .addAllServers(hostports)
+            .addAllTables(tables).build();
   }
 
   /**

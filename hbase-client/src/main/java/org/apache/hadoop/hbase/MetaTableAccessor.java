@@ -17,8 +17,17 @@
  */
 package org.apache.hadoop.hbase;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.protobuf.ServiceException;
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,17 +58,8 @@ import org.apache.hadoop.hbase.util.PairOfSameType;
 import org.apache.hadoop.hbase.zookeeper.MetaTableLocator;
 import org.apache.hadoop.hbase.zookeeper.ZooKeeperWatcher;
 
-import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.protobuf.ServiceException;
 
 /**
  * Read/write operations on region and assignment information store in
@@ -879,6 +879,31 @@ public class MetaTableAccessor {
     }
   }
 
+    /**
+     * A Visitor that skips offline regions and split parents
+     */
+    public static abstract class DefaultVisitorBase implements Visitor {
+
+        public DefaultVisitorBase() {
+            super();
+        }
+
+        public abstract boolean visitInternal(Result rowResult) throws IOException;
+
+        @Override
+        public boolean visit(Result rowResult) throws IOException {
+            HRegionInfo info = getHRegionInfo(rowResult);
+            if (info == null) {
+                return true;
+            }
+
+            //skip over offline and split regions
+            if (!(info.isOffline() || info.isSplit())) {
+                return visitInternal(rowResult);
+            }
+            return true;
+        }
+    }
   /**
    * Count regions in <code>hbase:meta</code> for passed table.
    * @param c Configuration object

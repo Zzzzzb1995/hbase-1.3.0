@@ -128,6 +128,8 @@ import com.google.protobuf.RpcCallback;
 import com.google.protobuf.RpcController;
 import com.google.protobuf.Service;
 
+import com.google.common.net.HostAndPort;
+
 /**
  * Provides basic authorization checks for data access and administrative
  * operations.
@@ -2661,4 +2663,36 @@ public class AccessController extends BaseMasterAndRegionObserver
       final String namespace, final Quotas quotas) throws IOException {
     requirePermission("setNamespaceQuota", Action.ADMIN);
   }
+
+
+  @Override
+  public void preMoveServers(ObserverContext<MasterCoprocessorEnvironment> ctx,
+                             Set<HostAndPort> servers, String targetGroup) throws IOException {
+    requirePermission("moveServers", Action.ADMIN);
+  }
+
+  @Override
+  public void preMoveTables(ObserverContext<MasterCoprocessorEnvironment> ctx,
+                            Set<TableName> tables, String targetGroup) throws IOException {
+    requirePermission("moveTables", Action.ADMIN);
+  }
+
+  @Override
+  public void preAddGroup(ObserverContext<MasterCoprocessorEnvironment> ctx,
+                          String name) throws IOException {
+    requirePermission("addGroup", Action.ADMIN);
+  }
+
+  @Override
+  public void preRemoveGroup(ObserverContext<MasterCoprocessorEnvironment> ctx,
+                             String name) throws IOException {
+    requirePermission("removeGroup", Action.ADMIN);
+  }
+
+  @Override
+  public void preBalanceGroup(ObserverContext<MasterCoprocessorEnvironment> ctx,
+                              String groupName) throws IOException {
+    requirePermission("balanceGroup", Action.ADMIN);
+  }
+
 }

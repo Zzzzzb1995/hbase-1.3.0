@@ -130,7 +130,7 @@ public class AssignmentManager extends ZooKeeperListener {
   private static final Log LOG = LogFactory.getLog(AssignmentManager.class);
 
   public static final ServerName HBCK_CODE_SERVERNAME = ServerName.valueOf(HConstants.HBCK_CODE_NAME,
-      -1, -1L);
+          0, -1L);
 
   static final String ALREADY_IN_TRANSITION_WAITTIME
     = "hbase.assignment.already.intransition.waittime";
@@ -2139,7 +2139,7 @@ public class AssignmentManager extends ZooKeeperListener {
           }
         }
         LOG.info("Assigning " + region.getRegionNameAsString() +
-            " to " + plan.getDestination().toString());
+            " to " + plan.getDestination());
         // Transition RegionState to PENDING_OPEN
         currentState = regionStates.updateRegionState(region,
           State.PENDING_OPEN, plan.getDestination());
@@ -2442,7 +2442,13 @@ public class AssignmentManager extends ZooKeeperListener {
     }
 
     if (newPlan) {
-      ServerName destination = balancer.randomAssignment(region, destServers);
+      ServerName destination = null;
+      try {
+        destination = balancer.randomAssignment(region, destServers);
+      } catch (IOException ex) {
+        LOG.warn("Failed to create new plan.",ex);
+        return null;
+      }
       if (destination == null) {
         LOG.warn("Can't find a destination for " + encodedName);
         return null;
@@ -2784,6 +2790,8 @@ public class AssignmentManager extends ZooKeeperListener {
       throw new IOException("Unable to determine a plan to assign region(s)");
     }
 
+    processBogusAssignments(bulkPlan);
+
     assign(regions.size(), servers.size(),
       "retainAssignment=true", bulkPlan);
   }
@@ -2812,6 +2820,8 @@ public class AssignmentManager extends ZooKeeperListener {
     if (bulkPlan == null) {
       throw new IOException("Unable to determine a plan to assign region(s)");
     }
+
+    processBogusAssignments(bulkPlan);
 
     processFavoredNodes(regions);
     assign(regions.size(), servers.size(), "round-robin=true", bulkPlan);
@@ -4455,6 +4465,17 @@ public class AssignmentManager extends ZooKeeperListener {
     }
     return errorMsg;
   }
+
+  private void processBogusAssignments(Map<ServerName, List<HRegionInfo>> bulkPlan) {
+    if (bulkPlan.containsKey(LoadBalancer.BOGUS_SERVER_NAME)) {
+      // Found no plan for some regions, put those regions in RIT
+      for (HRegionInfo hri : bulkPlan.get(LoadBalancer.BOGUS_SERVER_NAME)) {
+        regionStates.updateRegionState(hri, State.FAILED_OPEN);
+      }
+      bulkPlan.remove(LoadBalancer.BOGUS_SERVER_NAME);
+    }
+  }
+
 
   /**
    * @return Instance of load balancer

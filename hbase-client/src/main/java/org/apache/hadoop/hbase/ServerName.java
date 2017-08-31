@@ -21,6 +21,7 @@ package org.apache.hadoop.hbase;
 import com.google.common.net.InetAddresses;
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import com.google.common.net.HostAndPort;
 import org.apache.hadoop.hbase.classification.InterfaceAudience;
 import org.apache.hadoop.hbase.classification.InterfaceStability;
 import org.apache.hadoop.hbase.exceptions.DeserializationException;
@@ -88,8 +89,7 @@ public class ServerName implements Comparable<ServerName>, Serializable {
   public static final String UNKNOWN_SERVERNAME = "#unknown#";
 
   private final String servername;
-  private final String hostnameOnly;
-  private final int port;
+  private final HostAndPort hostAndPort;
   private final long startcode;
 
   /**
@@ -102,10 +102,9 @@ public class ServerName implements Comparable<ServerName>, Serializable {
   private ServerName(final String hostname, final int port, final long startcode) {
     // Drop the domain is there is one; no need of it in a local cluster.  With it, we get long
     // unwieldy names.
-    this.hostnameOnly = hostname;
-    this.port = port;
+    this.hostAndPort = HostAndPort.fromParts(hostname, port);
     this.startcode = startcode;
-    this.servername = getServerName(this.hostnameOnly, port, startcode);
+    this.servername = getServerName(hostname, port, startcode);
   }
 
   /**
@@ -189,7 +188,8 @@ public class ServerName implements Comparable<ServerName>, Serializable {
    * in compares, etc.
    */
   public String toShortString() {
-    return Addressing.createHostAndPortStr(getHostNameMinusDomain(this.hostnameOnly), this.port);
+    return Addressing.createHostAndPortStr(
+            getHostNameMinusDomain(hostAndPort.getHostText()), hostAndPort.getPort());
   }
 
   /**
@@ -208,11 +208,11 @@ public class ServerName implements Comparable<ServerName>, Serializable {
   }
 
   public String getHostname() {
-    return hostnameOnly;
+    return hostAndPort.getHostText();
   }
 
   public int getPort() {
-    return port;
+    return hostAndPort.getPort();
   }
 
   public long getStartcode() {
@@ -256,9 +256,12 @@ public class ServerName implements Comparable<ServerName>, Serializable {
    * {@link Addressing#createHostAndPortStr(String, int)}
    */
   public String getHostAndPort() {
-    return Addressing.createHostAndPortStr(this.hostnameOnly, this.port);
+    return Addressing.createHostAndPortStr(hostAndPort.getHostText(), hostAndPort.getPort());
   }
 
+  public HostAndPort getHostPort() {
+    return hostAndPort;
+  }
   /**
    * @param serverName ServerName in form specified by {@link #getServerName()}
    * @return The server start code parsed from <code>servername</code>
