@@ -30,9 +30,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.hadoop.hbase.classification.InterfaceAudience;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.ServerName;
-import org.apache.hadoop.hbase.tmpl.master.MasterStatusTmpl;
 import org.apache.hadoop.hbase.util.FSUtils;
 import org.apache.hadoop.hbase.zookeeper.MetaTableLocator;
+
+import org.apache.hadoop.hbase.group.GroupBasedLoadBalancer;
+import org.apache.hadoop.hbase.tmpl.master.MasterStatusTmpl;
 
 /**
  * The servlet responsible for rendering the index page of the
@@ -73,6 +75,11 @@ public class MasterStatusServlet extends HttpServlet {
       .setServers(servers)
       .setDeadServers(deadServers)
       .setCatalogJanitorEnabled(master.isCatalogJanitorEnabled());
+
+    if (master.getLoadBalancer() instanceof GroupBasedLoadBalancer) {
+      tmpl.setGroups(((GroupBasedLoadBalancer) master.getLoadBalancer())
+              .getGroupInfoManager().listGroups());
+    }
 
     if (request.getParameter("filter") != null)
       tmpl.setFilter(request.getParameter("filter"));

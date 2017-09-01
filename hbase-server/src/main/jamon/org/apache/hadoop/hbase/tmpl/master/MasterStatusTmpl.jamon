@@ -21,6 +21,9 @@ HMaster master;
 Map<String, Integer> frags = null;
 ServerName metaLocation = null;
 List<ServerName> servers = null;
+List<GroupInfo> groups = null;
+org.apache.hadoop.hbase.group.GroupInfo;
+com.google.common.base.Joiner;
 Set<ServerName> deadServers = null;
 boolean catalogJanitorEnabled = true;
 String filter = "general";
@@ -187,6 +190,10 @@ AssignmentManager assignmentManager = master.getAssignmentManager();
         <section>
             <h2>Region Servers</h2>
             <& RegionServerListTmpl; master= master; servers = servers &>
+
+            <%if (groups != null) %>
+            <& groupInfos &>
+            </%if>
 
             <%if (deadServers != null) %>
                 <& deadRegionServers &>
@@ -495,6 +502,25 @@ AssignmentManager assignmentManager = master.getAssignmentManager();
 </%if>
 </%def>
 
+<%def groupInfos>
+<h2>Server Group Informations</h2>
+<%if (groups != null && groups.size() > 0)%>
+<table>
+<tr><th>Group Name</th><th>Servers</th><th>Tables</th></tr>
+<%java>
+  for(GroupInfo group: groups){
+    String servers = Joiner.on(',').join(group.getServers());
+    String tables = Joiner.on(',').join(group.getTables());
+    String groupName = group.getName();
+</%java>
+<tr><td><% groupName %></td><td><% servers %></td><td><% tables %></td></tr>
+<%java>
+  }
+</%java>
+<tr><th>Total:<% groups.size() %></th><td></td><td></td></tr>
+</table>
+</%if>
+</%def>
 
 <%def deadRegionServers>
 
