@@ -181,6 +181,8 @@
                           <include>Encryption.proto</include>
                           <include>ErrorHandling.proto</include>
                           <include>FS.proto</include>
+                          <include>Group.proto</include>
+                          <include>GroupAdmin.proto</include>
                           <include>Filter.proto</include>
                           <include>HBase.proto</include>
                           <include>HFile.proto</include>
