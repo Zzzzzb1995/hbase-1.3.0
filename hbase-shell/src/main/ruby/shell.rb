@@ -87,6 +87,10 @@ module Shell
       @hbase_admin ||= hbase.admin(formatter)
     end
 
+    def group_admin
+      @group_admin ||= hbase.group_admin(formatter)
+    end
+
     def hbase_table(name)
       hbase.table(name, self)
     end
@@ -429,5 +433,22 @@ Shell.load_command_group(
     get_auths
     clear_auths
     set_visibility
+  ]
+)
+
+Shell.load_command_group(
+    'group',
+    :full_name => 'Groups',
+    :comment => "NOTE: Above commands are only applicable if running with the Groups setup",
+    :commands => %w[
+    list_groups
+    get_group
+    add_group
+    remove_group
+    balance_group
+    move_group_servers
+    move_group_tables
+    get_server_group
+    get_table_group
   ]
 )

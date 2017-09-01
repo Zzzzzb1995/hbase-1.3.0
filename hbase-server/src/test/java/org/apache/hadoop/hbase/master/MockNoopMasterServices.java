@@ -282,4 +282,11 @@ public class MockNoopMasterServices implements MasterServices, Server {
   public boolean isStopped() {
     return false;
   }
+
+
+  @Override
+  public LoadBalancer getLoadBalancer() {
+    return null;
+  }
+
 }
