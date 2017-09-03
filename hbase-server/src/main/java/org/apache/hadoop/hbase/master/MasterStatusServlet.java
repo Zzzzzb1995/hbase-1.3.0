@@ -76,10 +76,10 @@ public class MasterStatusServlet extends HttpServlet {
       .setDeadServers(deadServers)
       .setCatalogJanitorEnabled(master.isCatalogJanitorEnabled());
 
-    if (master.getLoadBalancer() instanceof GroupBasedLoadBalancer) {
-      tmpl.setGroups(((GroupBasedLoadBalancer) master.getLoadBalancer())
-              .getGroupInfoManager().listGroups());
-    }
+//    if (master.getLoadBalancer() instanceof GroupBasedLoadBalancer) {
+//      tmpl.setGroups(((GroupBasedLoadBalancer) master.getLoadBalancer())
+//              .getGroupInfoManager().listGroups());
+//    }
 
     if (request.getParameter("filter") != null)
       tmpl.setFilter(request.getParameter("filter"));
