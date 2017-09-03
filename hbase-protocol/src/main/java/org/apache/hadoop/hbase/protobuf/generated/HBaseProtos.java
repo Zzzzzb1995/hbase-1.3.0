@@ -18934,7 +18934,7 @@ public final class HBaseProtos {
   }
 
   public interface HostPortOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+      extends com.google.protobuf.MessageOrBuilder {
 
     // required string host_name = 1;
     /**
@@ -18949,7 +18949,7 @@ public final class HBaseProtos {
      * <code>required string host_name = 1;</code>
      */
     com.google.protobuf.ByteString
-    getHostNameBytes();
+        getHostNameBytes();
 
     // required uint32 port = 2;
     /**
@@ -18962,11 +18962,11 @@ public final class HBaseProtos {
     int getPort();
   }
   /**
-   * Protobuf type {@code HostPort}
+   * Protobuf type {@code hbase.pb.HostPort}
    */
   public static final class HostPort extends
-          com.google.protobuf.GeneratedMessage
-          implements HostPortOrBuilder {
+      com.google.protobuf.GeneratedMessage
+      implements HostPortOrBuilder {
     // Use HostPort.newBuilder() to construct.
     private HostPort(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -18986,17 +18986,17 @@ public final class HBaseProtos {
     private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private HostPort(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       initFields();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-              com.google.protobuf.UnknownFieldSet.newBuilder();
+          com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -19007,7 +19007,7 @@ public final class HBaseProtos {
               break;
             default: {
               if (!parseUnknownField(input, unknownFields,
-                      extensionRegistry, tag)) {
+                                     extensionRegistry, tag)) {
                 done = true;
               }
               break;
@@ -19028,33 +19028,33 @@ public final class HBaseProtos {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
     public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
-      return org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.internal_static_HostPort_descriptor;
+        getDescriptor() {
+      return org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.internal_static_hbase_pb_HostPort_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-    internalGetFieldAccessorTable() {
-      return org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.internal_static_HostPort_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                      org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.HostPort.class, org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.HostPort.Builder.class);
+        internalGetFieldAccessorTable() {
+      return org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.internal_static_hbase_pb_HostPort_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.HostPort.class, org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.HostPort.Builder.class);
     }
 
     public static com.google.protobuf.Parser<HostPort> PARSER =
-            new com.google.protobuf.AbstractParser<HostPort>() {
-              public HostPort parsePartialFrom(
-                      com.google.protobuf.CodedInputStream input,
-                      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                      throws com.google.protobuf.InvalidProtocolBufferException {
-                return new HostPort(input, extensionRegistry);
-              }
-            };
+        new com.google.protobuf.AbstractParser<HostPort>() {
+      public HostPort parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new HostPort(input, extensionRegistry);
+      }
+    };
 
     @java.lang.Override
     public com.google.protobuf.Parser<HostPort> getParserForType() {
@@ -19079,8 +19079,8 @@ public final class HBaseProtos {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           hostName_ = s;
@@ -19092,12 +19092,12 @@ public final class HBaseProtos {
      * <code>required string host_name = 1;</code>
      */
     public com.google.protobuf.ByteString
-    getHostNameBytes() {
+        getHostNameBytes() {
       java.lang.Object ref = hostName_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8(
-                        (java.lang.String) ref);
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
         hostName_ = b;
         return b;
       } else {
@@ -19143,7 +19143,7 @@ public final class HBaseProtos {
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
+                        throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeBytes(1, getHostNameBytes());
@@ -19162,11 +19162,11 @@ public final class HBaseProtos {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(1, getHostNameBytes());
+          .computeBytesSize(1, getHostNameBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-                .computeUInt32Size(2, port_);
+          .computeUInt32Size(2, port_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -19176,14 +19176,14 @@ public final class HBaseProtos {
     private static final long serialVersionUID = 0L;
     @java.lang.Override
     protected java.lang.Object writeReplace()
-            throws java.io.ObjectStreamException {
+        throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
 
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-        return true;
+       return true;
       }
       if (!(obj instanceof org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.HostPort)) {
         return super.equals(obj);
@@ -19194,15 +19194,15 @@ public final class HBaseProtos {
       result = result && (hasHostName() == other.hasHostName());
       if (hasHostName()) {
         result = result && getHostName()
-                .equals(other.getHostName());
+            .equals(other.getHostName());
       }
       result = result && (hasPort() == other.hasPort());
       if (hasPort()) {
         result = result && (getPort()
-                == other.getPort());
+            == other.getPort());
       }
       result = result &&
-              getUnknownFields().equals(other.getUnknownFields());
+          getUnknownFields().equals(other.getUnknownFields());
       return result;
     }
 
@@ -19228,55 +19228,55 @@ public final class HBaseProtos {
     }
 
     public static org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.HostPort parseFrom(
-            com.google.protobuf.ByteString data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
     public static org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.HostPort parseFrom(
-            com.google.protobuf.ByteString data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
     public static org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.HostPort parseFrom(byte[] data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
     public static org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.HostPort parseFrom(
-            byte[] data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
     public static org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.HostPort parseFrom(java.io.InputStream input)
-            throws java.io.IOException {
+        throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
     public static org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.HostPort parseFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
     public static org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.HostPort parseDelimitedFrom(java.io.InputStream input)
-            throws java.io.IOException {
+        throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
     public static org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.HostPort parseDelimitedFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.HostPort parseFrom(
-            com.google.protobuf.CodedInputStream input)
-            throws java.io.IOException {
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
     public static org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.HostPort parseFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
 
@@ -19289,26 +19289,26 @@ public final class HBaseProtos {
 
     @java.lang.Override
     protected Builder newBuilderForType(
-            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
     /**
-     * Protobuf type {@code HostPort}
+     * Protobuf type {@code hbase.pb.HostPort}
      */
     public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-            implements org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.HostPortOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.HostPortOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
-      getDescriptor() {
-        return org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.internal_static_HostPort_descriptor;
+          getDescriptor() {
+        return org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.internal_static_hbase_pb_HostPort_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internalGetFieldAccessorTable() {
-        return org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.internal_static_HostPort_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.HostPort.class, org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.HostPort.Builder.class);
+          internalGetFieldAccessorTable() {
+        return org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.internal_static_hbase_pb_HostPort_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.HostPort.class, org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.HostPort.Builder.class);
       }
 
       // Construct using org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.HostPort.newBuilder()
@@ -19317,7 +19317,7 @@ public final class HBaseProtos {
       }
 
       private Builder(
-              com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -19343,8 +19343,8 @@ public final class HBaseProtos {
       }
 
       public com.google.protobuf.Descriptors.Descriptor
-      getDescriptorForType() {
-        return org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.internal_static_HostPort_descriptor;
+          getDescriptorForType() {
+        return org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.internal_static_hbase_pb_HostPort_descriptor;
       }
 
       public org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.HostPort getDefaultInstanceForType() {
@@ -19401,20 +19401,20 @@ public final class HBaseProtos {
 
       public final boolean isInitialized() {
         if (!hasHostName()) {
-
+          
           return false;
         }
         if (!hasPort()) {
-
+          
           return false;
         }
         return true;
       }
 
       public Builder mergeFrom(
-              com.google.protobuf.CodedInputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws java.io.IOException {
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
         org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.HostPort parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -19445,7 +19445,7 @@ public final class HBaseProtos {
         java.lang.Object ref = hostName_;
         if (!(ref instanceof java.lang.String)) {
           java.lang.String s = ((com.google.protobuf.ByteString) ref)
-                  .toStringUtf8();
+              .toStringUtf8();
           hostName_ = s;
           return s;
         } else {
@@ -19456,12 +19456,12 @@ public final class HBaseProtos {
        * <code>required string host_name = 1;</code>
        */
       public com.google.protobuf.ByteString
-      getHostNameBytes() {
+          getHostNameBytes() {
         java.lang.Object ref = hostName_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b =
-                  com.google.protobuf.ByteString.copyFromUtf8(
-                          (java.lang.String) ref);
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
           hostName_ = b;
           return b;
         } else {
@@ -19472,11 +19472,11 @@ public final class HBaseProtos {
        * <code>required string host_name = 1;</code>
        */
       public Builder setHostName(
-              java.lang.String value) {
+          java.lang.String value) {
         if (value == null) {
-          throw new NullPointerException();
-        }
-        bitField0_ |= 0x00000001;
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
         hostName_ = value;
         onChanged();
         return this;
@@ -19494,11 +19494,11 @@ public final class HBaseProtos {
        * <code>required string host_name = 1;</code>
        */
       public Builder setHostNameBytes(
-              com.google.protobuf.ByteString value) {
+          com.google.protobuf.ByteString value) {
         if (value == null) {
-          throw new NullPointerException();
-        }
-        bitField0_ |= 0x00000001;
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
         hostName_ = value;
         onChanged();
         return this;
@@ -19537,7 +19537,7 @@ public final class HBaseProtos {
         return this;
       }
 
-      // @@protoc_insertion_point(builder_scope:HostPort)
+      // @@protoc_insertion_point(builder_scope:hbase.pb.HostPort)
     }
 
     static {
@@ -19545,7 +19545,7 @@ public final class HBaseProtos {
       defaultInstance.initFields();
     }
 
-    // @@protoc_insertion_point(class_scope:HostPort)
+    // @@protoc_insertion_point(class_scope:hbase.pb.HostPort)
   }
 
   private static com.google.protobuf.Descriptors.Descriptor
@@ -19668,12 +19668,11 @@ public final class HBaseProtos {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_hbase_pb_RegionServerInfo_fieldAccessorTable;
-
   private static com.google.protobuf.Descriptors.Descriptor
-          internal_static_HostPort_descriptor;
+    internal_static_hbase_pb_HostPort_descriptor;
   private static
-  com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internal_static_HostPort_fieldAccessorTable;
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_hbase_pb_HostPort_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -19733,16 +19732,17 @@ public final class HBaseProtos {
       "\020\n\010revision\030\003 \002(\t\022\014\n\004user\030\004 \002(\t\022\014\n\004date\030" +
       "\005 \002(\t\022\024\n\014src_checksum\030\006 \002(\t\022\025\n\rversion_m" +
       "ajor\030\007 \001(\r\022\025\n\rversion_minor\030\010 \001(\r\"Q\n\020Reg",
-      "ionServer" + 
-      "Info\022\020\n\010infoPort\030\001 \001(\005\"+\n\010HostPort\022\021\n\tho" +
-      "st_name\030\001 \002(\t\022\014\n\004port\030\002 \002(\r*r\n\013CompareTy" +
-      "pe\022\010\n\004LESS\020\000\022\021\n\rLESS_OR_EQUAL\020\001\022\t\n\005EQUAL" +
-      "\020\002\022\r\n\tNOT_EQUAL\020\003\022\024\n\020GREATER_OR_EQUAL\020\004\022" +
-      "\013\n\007GREATER\020\005\022\t\n\005NO_OP\020\006*n\n\010TimeUnit\022\017\n\013N" +
-      "ANOSECONDS\020\001\022\020\n\014MICROSECONDS\020\002\022\020\n\014MILLIS" +
-      "ECONDS\020\003\022\013\n\007SECONDS\020\004\022\013\n\007MINUTES\020\005\022\t\n\005HO" +
-      "URS\020\006\022\010\n\004DAYS\020\007B>\n*org.apache.hadoop.hba" +
-      "se.protobuf.generatedB\013HBaseProtosH\001\240\001\001"
+      "ionServerInfo\022\020\n\010infoPort\030\001 \001(\005\022+\n\014versi" +
+      "on_info\030\002 \001(\0132\025.hbase.pb.VersionInfo\"+\n\010" +
+      "HostPort\022\021\n\thost_name\030\001 \002(\t\022\014\n\004port\030\002 \002(" +
+      "\r*r\n\013CompareType\022\010\n\004LESS\020\000\022\021\n\rLESS_OR_EQ" +
+      "UAL\020\001\022\t\n\005EQUAL\020\002\022\r\n\tNOT_EQUAL\020\003\022\024\n\020GREAT" +
+      "ER_OR_EQUAL\020\004\022\013\n\007GREATER\020\005\022\t\n\005NO_OP\020\006*n\n" +
+      "\010TimeUnit\022\017\n\013NANOSECONDS\020\001\022\020\n\014MICROSECON" +
+      "DS\020\002\022\020\n\014MILLISECONDS\020\003\022\013\n\007SECONDS\020\004\022\013\n\007M" +
+      "INUTES\020\005\022\t\n\005HOURS\020\006\022\010\n\004DAYS\020\007B>\n*org.apa" +
+      "che.hadoop.hbase.protobuf.generatedB\013HBa",
+      "seProtosH\001\240\001\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -19893,11 +19893,11 @@ public final class HBaseProtos {
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_hbase_pb_RegionServerInfo_descriptor,
               new java.lang.String[] { "InfoPort", "VersionInfo", });
-          internal_static_HostPort_descriptor =
+          internal_static_hbase_pb_HostPort_descriptor =
             getDescriptor().getMessageTypes().get(24);
-          internal_static_HostPort_fieldAccessorTable = new
+          internal_static_hbase_pb_HostPort_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_HostPort_descriptor,
+              internal_static_hbase_pb_HostPort_descriptor,
               new java.lang.String[] { "HostName", "Port", });
           return null;
         }
