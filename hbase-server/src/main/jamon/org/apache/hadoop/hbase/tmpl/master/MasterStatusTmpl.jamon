@@ -22,8 +22,6 @@ Map<String, Integer> frags = null;
 ServerName metaLocation = null;
 List<ServerName> servers = null;
 List<GroupInfo> groups = null;
-org.apache.hadoop.hbase.group.GroupInfo;
-com.google.common.base.Joiner;
 Set<ServerName> deadServers = null;
 boolean catalogJanitorEnabled = true;
 String filter = "general";
@@ -58,6 +56,8 @@ org.apache.hadoop.hbase.protobuf.ProtobufUtil;
 org.apache.hadoop.hbase.security.visibility.VisibilityConstants;
 org.apache.hadoop.hbase.security.access.AccessControlLists;
 org.apache.hadoop.hbase.quotas.QuotaUtil;
+org.apache.hadoop.hbase.group.GroupInfo;
+com.google.common.base.Joiner;
 </%import>
 
 <%if format.equals("json") %>
