@@ -24,3 +24,5 @@ target/
 release/
 RESULTS/
 CSV_EXPORT/
+/conf
+/bin
