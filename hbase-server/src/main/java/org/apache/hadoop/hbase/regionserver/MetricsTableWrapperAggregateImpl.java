@@ -32,6 +32,7 @@ import org.apache.hadoop.hbase.CompatibilitySingletonFactory;
 import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.classification.InterfaceAudience;
+import org.apache.hadoop.hbase.util.EnvironmentEdgeManager;
 import org.apache.hadoop.metrics2.MetricsExecutor;
 
 import com.google.common.collect.Sets;
@@ -57,12 +58,15 @@ public class MetricsTableWrapperAggregateImpl implements MetricsTableWrapperAggr
 
   public class TableMetricsWrapperRunnable implements Runnable {
 
+    private long lastRan = 0;
+    private long lastRequestCount = 0;
+
     @Override
     public void run() {
       Map<TableName, MetricsTableValues> localMetricsTableMap = new HashMap<>();
 
       for (Region r : regionServer.getOnlineRegionsLocalContext()) {
-        TableName tbl= r.getTableDesc().getTableName();
+        TableName tbl = r.getTableDesc().getTableName();
         MetricsTableValues metricsTable = localMetricsTableMap.get(tbl);
         if (metricsTable == null) {
           metricsTable = new MetricsTableValues();
@@ -72,12 +76,39 @@ public class MetricsTableWrapperAggregateImpl implements MetricsTableWrapperAggr
         for (Store store : r.getStores()) {
           tempStorefilesSize += store.getStorefilesSize();
         }
+
         metricsTable.setMemstoresSize(metricsTable.getMemstoresSize() + r.getMemstoreSize());
         metricsTable.setStoreFilesSize(metricsTable.getStoreFilesSize() + tempStorefilesSize);
         metricsTable.setTableSize(metricsTable.getMemstoresSize() + metricsTable.getStoreFilesSize());
         metricsTable.setReadRequestsCount(metricsTable.getReadRequestsCount() + r.getReadRequestsCount());
         metricsTable.setWriteRequestsCount(metricsTable.getWriteRequestsCount() + r.getWriteRequestsCount());
         metricsTable.setTotalRequestsCount(metricsTable.getReadRequestsCount() + metricsTable.getWriteRequestsCount());
+      }
+
+      // Compute table number of requests per second
+      long currentTime = EnvironmentEdgeManager.currentTime();
+      // assume that it took PERIOD seconds to start the executor.
+      // this is a guess but it's a pretty good one.
+      if (lastRan == 0) {
+        lastRan = currentTime - period;
+      }
+      for (Map.Entry<TableName, MetricsTableValues> entry : localMetricsTableMap.entrySet()) {
+        TableName tbl = entry.getKey();
+        MetricsTableValues metricsTable = localMetricsTableMap.get(tbl);
+        if (metricsTable == null) {
+          metricsTable = new MetricsTableValues();
+          localMetricsTableMap.put(tbl, metricsTable);
+        }
+        // If we've time traveled keep the last requests per second.
+        if ((currentTime - lastRan) > 0) {
+          long currentRequestCount = metricsTable.getTotalRequestsCount();
+          double requestsPerSecond =
+                  (currentRequestCount - lastRequestCount) / ((currentTime - lastRan) / 1000.0);
+          lastRequestCount = currentRequestCount;
+          metricsTable.setRequestsPerSecond(requestsPerSecond);
+        }
+        lastRan = currentTime;
+        metricsTable.setRequestsPerSecond(metricsTable.getRequestsPerSecond());
       }
 
       for(Map.Entry<TableName, MetricsTableValues> entry : localMetricsTableMap.entrySet()) {
@@ -103,6 +134,15 @@ public class MetricsTableWrapperAggregateImpl implements MetricsTableWrapperAggr
         }
       }
     }
+  }
+
+  @Override
+  public double getRequestsPerSecond(String table) {
+    MetricsTableValues metricsTable = metricsTableMap.get(TableName.valueOf(table));
+    if (metricsTable == null) {
+      return 0.0;
+    }
+    return metricsTable.getRequestsPerSecond();
   }
 
   @Override
@@ -166,12 +206,21 @@ public class MetricsTableWrapperAggregateImpl implements MetricsTableWrapperAggr
 
   private static class MetricsTableValues {
 
+    private double requestsPerSecond;
     private long totalRequestsCount;
     private long readRequestsCount;
     private long writeRequestsCount;
     private long memstoresSize;
     private long storeFilesSize;
     private long tableSize;
+
+    public double getRequestsPerSecond() {
+      return requestsPerSecond;
+    }
+
+    public void setRequestsPerSecond(double requestsPerSecond) {
+      this.requestsPerSecond = requestsPerSecond;
+    }
 
     public long getTotalRequestsCount() {
       return totalRequestsCount;
