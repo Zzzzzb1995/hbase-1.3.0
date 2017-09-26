@@ -64,7 +64,7 @@ public class TestMetricsTableSourceImpl {
   public void testGetTableMetrics() throws Exception{
     MetricsTableSource oneTbl =
         CompatibilitySingletonFactory.getInstance(MetricsRegionServerSourceFactory.class)
-        .createTable("ONETABLE", new TableWrapperStub("ONETABLE"));
+            .createTable("ONETABLE", new TableWrapperStub("ONETABLE"));
     assertEquals("ONETABLE", oneTbl.getTableName());
   }
 
@@ -74,6 +74,11 @@ public class TestMetricsTableSourceImpl {
 
     public TableWrapperStub(String tableName) {
       this.tableName = tableName;
+    }
+
+    @Override
+    public double getRequestsPerSecond(String table) {
+      return 0.0;
     }
 
     @Override

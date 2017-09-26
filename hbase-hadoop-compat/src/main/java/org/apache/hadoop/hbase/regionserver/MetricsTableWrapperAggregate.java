@@ -26,6 +26,12 @@ package org.apache.hadoop.hbase.regionserver;
 public interface MetricsTableWrapperAggregate {
 
   /**
+   * Get the table request per second
+   * @param table
+   */
+  double getRequestsPerSecond(String table);
+
+  /**
    * Get the number of read requests that have been issued against this table
    */
   long getReadRequestsCount(String table);

@@ -48,5 +48,6 @@ public class TestMetricsTableAggregate {
     HELPER.assertGauge("Namespace_default_table_testTableMetrics_metric_memstoreSize", 1000, agg);
     HELPER.assertGauge("Namespace_default_table_testTableMetrics_metric_storeFileSize", 2000, agg);
     HELPER.assertGauge("Namespace_default_table_testTableMetrics_metric_tableSize", 3000, agg);
+    HELPER.assertGauge("Namespace_default_table_testTableMetrics_metric_requestsPerSecond", 0.0, agg);
   }
 }

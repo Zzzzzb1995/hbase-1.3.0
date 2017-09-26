@@ -27,6 +27,11 @@ public class MetricsTableWrapperStub implements MetricsTableWrapperAggregate {
   }
 
   @Override
+  public double getRequestsPerSecond(String table) {
+    return 0.0;
+  }
+
+  @Override
   public long getReadRequestsCount(String table) {
     return 10;
   }
