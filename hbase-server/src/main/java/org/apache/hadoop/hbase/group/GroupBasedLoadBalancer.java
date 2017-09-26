@@ -423,4 +423,8 @@ public class GroupBasedLoadBalancer implements GroupableBalancer, LoadBalancer {
           List<HRegionInfo>> clusterState) throws HBaseIOException {
     return null;
   }
+
+  public GroupInfoManager getGroupInfoManager() {
+    return groupInfoManager;
+  }
 }

@@ -83,9 +83,9 @@ public class TestAsyncProcess {
   private static final byte[] FAILS = "FAILS".getBytes();
   private static final Configuration conf = new Configuration();
 
-  private static ServerName sn = ServerName.valueOf("s1:1,1");
-  private static ServerName sn2 = ServerName.valueOf("s2:2,2");
-  private static ServerName sn3 = ServerName.valueOf("s3:3,3");
+  private static ServerName sn = ServerName.valueOf("s1,1,1");
+  private static ServerName sn2 = ServerName.valueOf("s2,2,2");
+  private static ServerName sn3 = ServerName.valueOf("s3,3,3");
   private static HRegionInfo hri1 =
       new HRegionInfo(DUMMY_TABLE, DUMMY_BYTES_1, DUMMY_BYTES_2, false, 1);
   private static HRegionInfo hri2 =
