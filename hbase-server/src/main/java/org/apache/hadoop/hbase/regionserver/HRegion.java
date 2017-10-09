@@ -288,6 +288,9 @@ public class HRegion implements HeapSize, PropagatingConfigurationObserver, Regi
   final Counter readRequestsCount = new Counter();
   final Counter writeRequestsCount = new Counter();
 
+  // Number of read rpc request count
+  final Counter rpcReadRequestsCount = new Counter();
+
   // Number of requests blocked by memstore size.
   private final Counter blockedRequestsCount = new Counter();
 
@@ -1144,6 +1147,16 @@ public class HRegion implements HeapSize, PropagatingConfigurationObserver, Regi
   @Override
   public void updateWriteRequestsCount(long i) {
     writeRequestsCount.add(i);
+  }
+
+  @Override
+  public void updateRpcReadRequestsCount(long i) {
+    rpcReadRequestsCount.add(i);
+  }
+
+  @Override
+  public long getRpcReadRequestsCount() {
+    return rpcReadRequestsCount.get();
   }
 
   @Override

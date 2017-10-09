@@ -186,6 +186,17 @@ public interface Region extends ConfigurationObserver {
    */
   void updateWriteRequestsCount(long i);
 
+  /**
+   * Update the rpc request count for this region
+   * @param i
+   */
+  void updateRpcReadRequestsCount(long i);
+
+  /**
+   * @return read rpc request count
+   */
+  long getRpcReadRequestsCount();
+
   /** @return memstore size for this region, in bytes */
   long getMemstoreSize();
 

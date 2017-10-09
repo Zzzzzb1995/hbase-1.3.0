@@ -140,6 +140,7 @@ public class MetricsTableSourceImpl implements MetricsTableSource {
         mrb.addGauge(Interns.info(tableNamePrefix + MetricsTableSource.TABLE_SIZE,
           MetricsTableSource.TABLE_SIZE_DESC),
           tableWrapperAgg.getTableSize(tableName.getNameAsString()));
+
         mrb.addGauge(Interns.info(tableNamePrefix + MetricsTableSource.REQUESTS_PER_SECOND,
                 MetricsTableSource.REQUESTS_PER_SECOND_DESC),
                 tableWrapperAgg.getRequestsPerSecond(tableName.getNameAsString()));

@@ -2074,6 +2074,8 @@ public class RSRpcServices implements HBaseRPCErrorHandler,
       rpcGetRequestCount.increment();
       Region region = getRegion(request.getRegion());
 
+      region.updateRpcReadRequestsCount(1);
+
       GetResponse.Builder builder = GetResponse.newBuilder();
       ClientProtos.Get get = request.getGet();
       Boolean existence = null;
@@ -2578,9 +2580,9 @@ public class RSRpcServices implements HBaseRPCErrorHandler,
               synchronized(scanner) {
                 boolean stale = (region.getRegionInfo().getReplicaId() != 0);
                 boolean clientHandlesPartials =
-                    request.hasClientHandlesPartials() && request.getClientHandlesPartials();
+                        request.hasClientHandlesPartials() && request.getClientHandlesPartials();
                 boolean clientHandlesHeartbeats =
-                    request.hasClientHandlesHeartbeats() && request.getClientHandlesHeartbeats();
+                        request.hasClientHandlesHeartbeats() && request.getClientHandlesHeartbeats();
 
                 // On the server side we must ensure that the correct ordering of partial results is
                 // returned to the client to allow them to properly reconstruct the partial results.
@@ -2589,7 +2591,7 @@ public class RSRpcServices implements HBaseRPCErrorHandler,
                 // formed.
                 boolean serverGuaranteesOrderOfPartials = results.isEmpty();
                 boolean allowPartialResults =
-                    clientHandlesPartials && serverGuaranteesOrderOfPartials && !isSmallScan;
+                        clientHandlesPartials && serverGuaranteesOrderOfPartials && !isSmallScan;
                 boolean moreRows = false;
 
                 // Heartbeat messages occur when the processing of the ScanRequest is exceeds a
@@ -2614,14 +2616,14 @@ public class RSRpcServices implements HBaseRPCErrorHandler,
                     timeLimitDelta = Math.min(scannerLeaseTimeoutPeriod, rpcTimeout);
                   } else {
                     timeLimitDelta =
-                        scannerLeaseTimeoutPeriod > 0 ? scannerLeaseTimeoutPeriod : rpcTimeout;
+                            scannerLeaseTimeoutPeriod > 0 ? scannerLeaseTimeoutPeriod : rpcTimeout;
                   }
                   if (controller instanceof TimeLimitedRpcController) {
                     TimeLimitedRpcController timeLimitedRpcController =
-                        (TimeLimitedRpcController)controller;
+                            (TimeLimitedRpcController)controller;
                     if (timeLimitedRpcController.getCallTimeout() > 0) {
                       timeLimitDelta = Math.min(timeLimitDelta,
-                          timeLimitedRpcController.getCallTimeout());
+                              timeLimitedRpcController.getCallTimeout());
                     }
                   }
                   // Use half of whichever timeout value was more restrictive... But don't allow
@@ -2632,12 +2634,12 @@ public class RSRpcServices implements HBaseRPCErrorHandler,
                 }
 
                 final LimitScope sizeScope =
-                    allowPartialResults ? LimitScope.BETWEEN_CELLS : LimitScope.BETWEEN_ROWS;
+                        allowPartialResults ? LimitScope.BETWEEN_CELLS : LimitScope.BETWEEN_ROWS;
                 final LimitScope timeScope =
-                    allowHeartbeatMessages ? LimitScope.BETWEEN_CELLS : LimitScope.BETWEEN_ROWS;
+                        allowHeartbeatMessages ? LimitScope.BETWEEN_CELLS : LimitScope.BETWEEN_ROWS;
 
                 boolean trackMetrics =
-                    request.hasTrackScanMetrics() && request.getTrackScanMetrics();
+                        request.hasTrackScanMetrics() && request.getTrackScanMetrics();
 
                 // Configure with limits for this RPC. Set keep progress true since size progress
                 // towards size limit should be kept between calls to nextRaw
@@ -2676,7 +2678,7 @@ public class RSRpcServices implements HBaseRPCErrorHandler,
                   if (limitReached || !moreRows) {
                     if (LOG.isTraceEnabled()) {
                       LOG.trace("Done scanning. limitReached: " + limitReached + " moreRows: "
-                          + moreRows + " scannerContext: " + scannerContext);
+                              + moreRows + " scannerContext: " + scannerContext);
                     }
                     // We only want to mark a ScanResponse as a heartbeat message in the event that
                     // there are more values to be read server side. If there aren't more values,
@@ -2716,6 +2718,7 @@ public class RSRpcServices implements HBaseRPCErrorHandler,
                 }
               }
               region.updateReadRequestsCount(i);
+              region.updateRpcReadRequestsCount(1);
               long end = EnvironmentEdgeManager.currentTime();
               long responseCellSize = context != null ? context.getResponseCellSize() : 0;
               region.getMetrics().updateScanTime(end - before);

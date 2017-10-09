@@ -59,7 +59,7 @@ public class MetricsTableWrapperAggregateImpl implements MetricsTableWrapperAggr
   public class TableMetricsWrapperRunnable implements Runnable {
 
     private long lastRan = 0;
-    private long lastRequestCount = 0;
+    private ConcurrentHashMap<String, Long> lastRequestMap = new ConcurrentHashMap<String, Long>();
 
     @Override
     public void run() {
@@ -83,6 +83,8 @@ public class MetricsTableWrapperAggregateImpl implements MetricsTableWrapperAggr
         metricsTable.setReadRequestsCount(metricsTable.getReadRequestsCount() + r.getReadRequestsCount());
         metricsTable.setWriteRequestsCount(metricsTable.getWriteRequestsCount() + r.getWriteRequestsCount());
         metricsTable.setTotalRequestsCount(metricsTable.getReadRequestsCount() + metricsTable.getWriteRequestsCount());
+
+        metricsTable.setRpcReadRequestsCount(metricsTable.getRpcReadRequestsCount() + r.getRpcReadRequestsCount());
       }
 
       // Compute table number of requests per second
@@ -92,24 +94,31 @@ public class MetricsTableWrapperAggregateImpl implements MetricsTableWrapperAggr
       if (lastRan == 0) {
         lastRan = currentTime - period;
       }
-      for (Map.Entry<TableName, MetricsTableValues> entry : localMetricsTableMap.entrySet()) {
-        TableName tbl = entry.getKey();
-        MetricsTableValues metricsTable = localMetricsTableMap.get(tbl);
-        if (metricsTable == null) {
-          metricsTable = new MetricsTableValues();
-          localMetricsTableMap.put(tbl, metricsTable);
-        }
-        // If we've time traveled keep the last requests per second.
-        if ((currentTime - lastRan) > 0) {
-          long currentRequestCount = metricsTable.getTotalRequestsCount();
+      // If we've time traveled keep the last requests per second.
+      if ((currentTime - lastRan) > 0) {
+        for (Map.Entry<TableName, MetricsTableValues> entry : localMetricsTableMap.entrySet()) {
+          TableName tbl = entry.getKey();
+          MetricsTableValues metricsTable = localMetricsTableMap.get(tbl);
+          long currentRequestCount = metricsTable.getWriteRequestsCount() + metricsTable.getRpcReadRequestsCount();
+          Long tempLastRequest = lastRequestMap.get(tbl.getNameAsString());
+          if (tempLastRequest == null) {
+            lastRequestMap.put(tbl.getNameAsString(), 0L);
+          }
+          long lastRequestCount = lastRequestMap.get(tbl.getNameAsString());
           double requestsPerSecond =
                   (currentRequestCount - lastRequestCount) / ((currentTime - lastRan) / 1000.0);
           lastRequestCount = currentRequestCount;
+          lastRequestMap.put(tbl.getNameAsString(), lastRequestCount);
+
+          if (metricsTable == null) {
+            metricsTable = new MetricsTableValues();
+            localMetricsTableMap.put(tbl, metricsTable);
+          }
+
           metricsTable.setRequestsPerSecond(requestsPerSecond);
         }
-        lastRan = currentTime;
-        metricsTable.setRequestsPerSecond(metricsTable.getRequestsPerSecond());
       }
+      lastRan = currentTime;
 
       for(Map.Entry<TableName, MetricsTableValues> entry : localMetricsTableMap.entrySet()) {
         TableName tbl = entry.getKey();
@@ -207,6 +216,10 @@ public class MetricsTableWrapperAggregateImpl implements MetricsTableWrapperAggr
   private static class MetricsTableValues {
 
     private double requestsPerSecond;
+    private double readPerSecond;
+    private double writePerSecond;
+    private long rpcReadRequestsCount;
+
     private long totalRequestsCount;
     private long readRequestsCount;
     private long writeRequestsCount;
@@ -220,6 +233,30 @@ public class MetricsTableWrapperAggregateImpl implements MetricsTableWrapperAggr
 
     public void setRequestsPerSecond(double requestsPerSecond) {
       this.requestsPerSecond = requestsPerSecond;
+    }
+
+    public double getReadPerSecond() {
+      return readPerSecond;
+    }
+
+    public void setReadPerSecond(double readPerSecond) {
+      this.readPerSecond = readPerSecond;
+    }
+
+    public double getWritePerSecond() {
+      return writePerSecond;
+    }
+
+    public void setWritePerSecond(double writePerSecond) {
+      this.writePerSecond = writePerSecond;
+    }
+
+    public long getRpcReadRequestsCount() {
+      return rpcReadRequestsCount;
+    }
+
+    public void setRpcReadRequestsCount(long rpcReadRequestsCount) {
+      this.rpcReadRequestsCount = rpcReadRequestsCount;
     }
 
     public long getTotalRequestsCount() {
