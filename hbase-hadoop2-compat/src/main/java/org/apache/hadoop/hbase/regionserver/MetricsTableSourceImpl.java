@@ -123,23 +123,27 @@ public class MetricsTableSourceImpl implements MetricsTableSource {
 
       if (this.tableWrapperAgg != null) {
         mrb.addCounter(Interns.info(tableNamePrefix + MetricsTableSource.READ_REQUEST_COUNT,
-          MetricsTableSource.READ_REQUEST_COUNT_DESC),
-          tableWrapperAgg.getReadRequestsCount(tableName.getNameAsString()));
+            MetricsTableSource.READ_REQUEST_COUNT_DESC),
+            tableWrapperAgg.getReadRequestsCount(tableName.getNameAsString()));
         mrb.addCounter(Interns.info(tableNamePrefix + MetricsTableSource.WRITE_REQUEST_COUNT,
-          MetricsTableSource.WRITE_REQUEST_COUNT_DESC),
-          tableWrapperAgg.getWriteRequestsCount(tableName.getNameAsString()));
+            MetricsTableSource.WRITE_REQUEST_COUNT_DESC),
+            tableWrapperAgg.getWriteRequestsCount(tableName.getNameAsString()));
         mrb.addCounter(Interns.info(tableNamePrefix + MetricsTableSource.TOTAL_REQUEST_COUNT,
-          MetricsTableSource.TOTAL_REQUEST_COUNT_DESC),
-          tableWrapperAgg.getTotalRequestsCount(tableName.getNameAsString()));
+            MetricsTableSource.TOTAL_REQUEST_COUNT_DESC),
+            tableWrapperAgg.getTotalRequestsCount(tableName.getNameAsString()));
         mrb.addGauge(Interns.info(tableNamePrefix + MetricsTableSource.MEMSTORE_SIZE,
-          MetricsTableSource.MEMSTORE_SIZE_DESC),
-          tableWrapperAgg.getMemstoresSize(tableName.getNameAsString()));
+            MetricsTableSource.MEMSTORE_SIZE_DESC),
+            tableWrapperAgg.getMemstoresSize(tableName.getNameAsString()));
         mrb.addGauge(Interns.info(tableNamePrefix + MetricsTableSource.STORE_FILE_SIZE,
-          MetricsTableSource.STORE_FILE_SIZE_DESC),
-          tableWrapperAgg.getStoreFilesSize(tableName.getNameAsString()));
+            MetricsTableSource.STORE_FILE_SIZE_DESC),
+            tableWrapperAgg.getStoreFilesSize(tableName.getNameAsString()));
         mrb.addGauge(Interns.info(tableNamePrefix + MetricsTableSource.TABLE_SIZE,
-          MetricsTableSource.TABLE_SIZE_DESC),
-          tableWrapperAgg.getTableSize(tableName.getNameAsString()));
+            MetricsTableSource.TABLE_SIZE_DESC),
+            tableWrapperAgg.getTableSize(tableName.getNameAsString()));
+        mrb.addGauge(Interns.info(tableNamePrefix + MetricsTableSource.REQUESTS_PER_SECOND,
+            MetricsTableSource.REQUESTS_PER_SECOND_DESC),
+            tableWrapperAgg.getRequestsPerSecond(tableName.getNameAsString()));
+
 
         mrb.addGauge(Interns.info(tableNamePrefix + MetricsTableSource.REQUESTS_PER_SECOND,
                 MetricsTableSource.REQUESTS_PER_SECOND_DESC),

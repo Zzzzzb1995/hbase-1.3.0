@@ -26,7 +26,6 @@ public interface MetricsTableSource extends Comparable<MetricsTableSource> {
 
   String REQUESTS_PER_SECOND = "requestsPerSecond";
   String REQUESTS_PER_SECOND_DESC = "Requests per second";
-
   String READ_REQUEST_COUNT = "readRequestCount";
   String READ_REQUEST_COUNT_DESC = "Number fo read requests";
   String WRITE_REQUEST_COUNT = "writeRequestCount";

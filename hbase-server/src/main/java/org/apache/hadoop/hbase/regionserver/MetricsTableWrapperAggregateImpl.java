@@ -49,11 +49,11 @@ public class MetricsTableWrapperAggregateImpl implements MetricsTableWrapperAggr
   public MetricsTableWrapperAggregateImpl(final HRegionServer regionServer) {
     this.regionServer = regionServer;
     this.period = regionServer.conf.getLong(HConstants.REGIONSERVER_METRICS_PERIOD,
-      HConstants.DEFAULT_REGIONSERVER_METRICS_PERIOD) + 1000;
+        HConstants.DEFAULT_REGIONSERVER_METRICS_PERIOD) + 1000;
     this.executor = CompatibilitySingletonFactory.getInstance(MetricsExecutor.class).getExecutor();
     this.runnable = new TableMetricsWrapperRunnable();
     this.tableMetricsUpdateTask = this.executor.scheduleWithFixedDelay(this.runnable, period, this.period,
-      TimeUnit.MILLISECONDS);
+        TimeUnit.MILLISECONDS);
   }
 
   public class TableMetricsWrapperRunnable implements Runnable {
@@ -125,10 +125,10 @@ public class MetricsTableWrapperAggregateImpl implements MetricsTableWrapperAggr
         if (metricsTableMap.get(tbl) == null) {
           MetricsTableSource tableSource = CompatibilitySingletonFactory
               .getInstance(MetricsRegionServerSourceFactory.class).createTable(tbl.getNameAsString(),
-                MetricsTableWrapperAggregateImpl.this);
+                  MetricsTableWrapperAggregateImpl.this);
           CompatibilitySingletonFactory
-          .getInstance(MetricsRegionServerSourceFactory.class).getTableAggregate()
-          .register(tbl.getNameAsString(), tableSource);
+              .getInstance(MetricsRegionServerSourceFactory.class).getTableAggregate()
+              .register(tbl.getNameAsString(), tableSource);
         }
         metricsTableMap.put(entry.getKey(), entry.getValue());
       }
