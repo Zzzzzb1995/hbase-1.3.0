@@ -2074,7 +2074,7 @@ public class RSRpcServices implements HBaseRPCErrorHandler,
       rpcGetRequestCount.increment();
       Region region = getRegion(request.getRegion());
 
-      region.updateRpcReadRequestsCount(1);
+      region.updateRpcReadRequestsCount(1L);
 
       GetResponse.Builder builder = GetResponse.newBuilder();
       ClientProtos.Get get = request.getGet();
@@ -2522,6 +2522,7 @@ public class RSRpcServices implements HBaseRPCErrorHandler,
         return builder.build();
       }
 
+      region.updateRpcReadRequestsCount(1L);
       quota = getQuotaManager().checkQuota(region, OperationQuota.OperationType.SCAN);
       long maxQuotaResultSize = Math.min(maxScannerResultSize, quota.getReadAvailable());
       if (rows > 0) {
@@ -2718,7 +2719,6 @@ public class RSRpcServices implements HBaseRPCErrorHandler,
                 }
               }
               region.updateReadRequestsCount(i);
-              region.updateRpcReadRequestsCount(1);
               long end = EnvironmentEdgeManager.currentTime();
               long responseCellSize = context != null ? context.getResponseCellSize() : 0;
               region.getMetrics().updateScanTime(end - before);
