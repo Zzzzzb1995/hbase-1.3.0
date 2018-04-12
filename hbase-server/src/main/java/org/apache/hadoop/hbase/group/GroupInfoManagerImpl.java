@@ -60,6 +60,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.ipc.CoprocessorRpcChannel;
 import org.apache.hadoop.hbase.master.MasterServices;
+import org.apache.hadoop.hbase.master.RegionState;
 import org.apache.hadoop.hbase.master.ServerListener;
 import org.apache.hadoop.hbase.master.procedure.CreateTableProcedure;
 import org.apache.hadoop.hbase.master.procedure.ProcedurePrepareLatch;
@@ -77,6 +78,7 @@ import org.apache.hadoop.hbase.zookeeper.ZKUtil;
 import org.apache.hadoop.hbase.zookeeper.ZooKeeperWatcher;
 import org.apache.zookeeper.KeeperException;
 
+import org.apache.hadoop.hbase.util.Threads;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -118,6 +120,7 @@ public class GroupInfoManagerImpl implements GroupInfoManager, ServerListener {
   private volatile Set<String> prevGroups;
   private GroupSerDe groupSerDe;
   private DefaultServerUpdater defaultServerUpdater;
+  private FailedOpenUpdater failedOpenUpdater;
 
 
   public GroupInfoManagerImpl(MasterServices master) throws IOException {
@@ -132,8 +135,11 @@ public class GroupInfoManagerImpl implements GroupInfoManager, ServerListener {
     refresh();
     groupStartupWorker.start();
     defaultServerUpdater = new DefaultServerUpdater(this);
+    Threads.setDaemonThreadRunning(defaultServerUpdater);
+    failedOpenUpdater = new FailedOpenUpdater(this);
+    Threads.setDaemonThreadRunning(failedOpenUpdater);
     master.getServerManager().registerListener(this);
-    defaultServerUpdater.start();
+
   }
 
   /**
@@ -470,6 +476,7 @@ public class GroupInfoManagerImpl implements GroupInfoManager, ServerListener {
   @Override
   public void serverAdded(ServerName serverName) {
     defaultServerUpdater.serverChanged();
+    failedOpenUpdater.serverChanged();
   }
 
   @Override
@@ -480,17 +487,21 @@ public class GroupInfoManagerImpl implements GroupInfoManager, ServerListener {
   private static class DefaultServerUpdater extends Thread {
     private static final Log LOG = LogFactory.getLog(DefaultServerUpdater.class);
     private GroupInfoManagerImpl mgr;
-    private boolean hasChanged = false;
+    private volatile boolean hasChanged = false;
 
     public DefaultServerUpdater(GroupInfoManagerImpl mgr) {
       this.mgr = mgr;
+      setName(DefaultServerUpdater.class.getName()+"-" + mgr.master.getServerName());
+      setDaemon(true);
     }
 
     public void run() {
       List<HostAndPort> prevDefaultServers = new LinkedList<HostAndPort>();
-      while(!mgr.master.isAborted() || !mgr.master.isStopped()) {
+      while (!mgr.master.isAborted() && !mgr.master.isStopped()) {
         try {
-          LOG.info("Updating default servers.");
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("Updating default servers");
+          }
           List<HostAndPort> servers = mgr.getDefaultServers();
           Collections.sort(servers, new Comparator<HostAndPort>() {
             @Override
@@ -509,12 +520,13 @@ public class GroupInfoManagerImpl implements GroupInfoManager, ServerListener {
           }
           try {
             synchronized (this) {
-              if(!hasChanged) {
+              while (!hasChanged) {
                 wait();
               }
               hasChanged = false;
             }
           } catch (InterruptedException e) {
+            LOG.warn("Interrupted", e);
           }
         } catch (IOException e) {
           LOG.warn("Failed to update default servers", e);
@@ -522,10 +534,79 @@ public class GroupInfoManagerImpl implements GroupInfoManager, ServerListener {
       }
     }
 
+    // Called for both server additions and removals
     public void serverChanged() {
       synchronized (this) {
         hasChanged = true;
         this.notify();
+      }
+    }
+  }
+
+  private static class FailedOpenUpdater extends Thread {
+    private static final Log LOG = LogFactory.getLog(FailedOpenUpdater.class);
+
+    private final GroupInfoManagerImpl mgr;
+    private final long waitInterval;
+    private volatile boolean hasChanged = false;
+
+    public FailedOpenUpdater(GroupInfoManagerImpl mgr) {
+      this.mgr = mgr;
+      this.waitInterval = mgr.master.getConfiguration().getLong(REASSIGN_WAIT_INTERVAL_KEY,
+              DEFAULT_REASSIGN_WAIT_INTERVAL);
+      setName(FailedOpenUpdater.class.getName() + "-" + mgr.master.getServerName());
+      setDaemon(true);
+    }
+
+    @Override
+    public void run() {
+      while (!mgr.master.isAborted() && !mgr.master.isStopped()) {
+        boolean interrupted = false;
+        try {
+          synchronized (this) {
+            while (!hasChanged) {
+              wait();
+            }
+            hasChanged = false;
+          }
+        } catch (InterruptedException e) {
+          LOG.warn("Interrupted", e);
+          interrupted = true;
+        }
+        if (mgr.master.isAborted() || mgr.master.isStopped() || interrupted) {
+          continue;
+        }
+
+        // First, wait a while in case more servers are about to rejoin the cluster
+        try {
+          Thread.sleep(waitInterval);
+        } catch (InterruptedException e) {
+          LOG.warn("Interrupted", e);
+        }
+        if (mgr.master.isAborted() || mgr.master.isStopped()) {
+          continue;
+        }
+
+        // Kick all regions in FAILED_OPEN state
+        List<HRegionInfo> failedAssignments = Lists.newArrayList();
+        List<RegionState> regionStates = new ArrayList<RegionState>
+                (mgr.master.getAssignmentManager().getRegionStates().getRegionsInTransition().values());
+        for (RegionState state : regionStates) {
+          if (state.isFailedOpen()) {
+            failedAssignments.add(state.getRegion());
+          }
+        }
+        for (HRegionInfo region : failedAssignments) {
+          LOG.info("Retrying assignment of " + region);
+          mgr.master.getAssignmentManager().unassign(region);
+        }
+      }
+    }
+
+    // Only called for server additions
+    public void serverChanged() {
+      synchronized (this) {
+        hasChanged = true;
       }
     }
   }

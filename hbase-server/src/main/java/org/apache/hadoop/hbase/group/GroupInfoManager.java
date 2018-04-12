@@ -35,6 +35,10 @@ import java.util.Set;
  * See {@link GroupBasedLoadBalancer}
  */
 public interface GroupInfoManager {
+
+  String REASSIGN_WAIT_INTERVAL_KEY = "hbase.rsgroup.reassign.wait";
+  long DEFAULT_REASSIGN_WAIT_INTERVAL = 10 * 1000L;
+
   //Assigned before user tables
   public static final TableName GROUP_TABLE_NAME =
       TableName.valueOf(NamespaceDescriptor.SYSTEM_NAMESPACE_NAME_STR,"rsgroup");
