@@ -21,12 +21,4 @@
  */
 -->
 <configuration>
-    <property>
-        <name>hbase.coprocessor.master.classes</name>
-        <value>org.apache.hadoop.hbase.group.GroupAdminEndpoint</value>
-    </property>
-    <property>
-        <name>hbase.master.loadbalancer.class</name>
-        <value>org.apache.hadoop.hbase.group.GroupBasedLoadBalancer</value>
-    </property>
 </configuration>
