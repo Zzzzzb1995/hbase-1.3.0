@@ -534,7 +534,7 @@ public class GroupInfoManagerImpl implements GroupInfoManager, ServerListener {
       }
     }
 
-    // Called for both server additions and removals
+    // Called for both server additions and removals.
     public void serverChanged() {
       synchronized (this) {
         hasChanged = true;
